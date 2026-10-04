@@ -1,7 +1,7 @@
 # AKSPI Project: Heart Disease Analysis
 
 ## Question
-How does the number of heart disease cases differ by sex in this dataset?
+How can a healthcare provider use differences in heart disease rates by sex to better target screening and prevention programs?
 
 ## Dataset
 - **Name:** Heart Disease Dataset
