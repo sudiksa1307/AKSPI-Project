@@ -1,83 +1,68 @@
-# AKSPI Project: Heart Disease Analysis
+# AKPsi Project: Heart Disease Analysis
 
-## Question
+## Research Question
 How do heart disease rates compare between male and female patients in this dataset, and how could a healthcare provider use these differences to guide screening and prevention programs?
 
 - **Number to measure:** Percentage of patients with heart disease.
-- **Group to compare:** Sex (`sex` column).
+- **Group to compare:** Sex.
 
 ## Dataset
 - **Name:** Synthetic Heart Disease Risk Analysis
-- **Kaggle link:** https://www.kaggle.com/datasets/srisyra02/synthetic-heart-disease-risk-analysis
+- **Source:** [Kaggle dataset](https://www.kaggle.com/datasets/srisyra02/synthetic-heart-disease-risk-analysis)
+- **Number of records:** 5,000
 - **What one row means:** Each row represents one synthetic patient, including their age, sex, health measurements, and heart disease status.
 
-## Python + AI
+### Why This Dataset?
+This dataset includes both sex and heart disease status, allowing me to compare the percentage of patients with heart disease within each sex group. It also provides an opportunity to practice Python, SQL, and data visualization using a healthcare-related research question.
 
-### Python
-I used pandas to load the CSV dataset, remove duplicate rows and rows with missing values, and standardize column names. I checked the first five rows, column names, and data types to understand the dataset. After cleaning, the table contained 5,000 records.
+### Key Columns
+- **`sex`:** Patient’s sex. The project feedback identifies `1` as male and `0` as female; this mapping still needs to be checked against the dataset documentation.
+- **`num`:** Heart disease status. The analysis treats `0` as no heart disease and values greater than `0` as heart disease.
 
-```python
-import pandas as pd
+## Python
+Python is used to load and inspect the dataset before the SQL analysis. This step helps identify the dataset’s structure, column names, data types, and missing values.
 
-df = pd.read_csv("PASTE_YOUR_RAW_LINK")
-df = df.drop_duplicates().dropna()
-df.columns = (
-    df.columns.str.strip()
-    .str.lower()
-    .str.replace(" ", "_")
-)
+- **Python notebook link:** (https://github.com/sudiksa1307/AKSPI-Project/blob/main/week2_sql.ipynb?short_path=14274d0)
 
-df.head()
-```
+Some columns, including `chol`, `fbs`, and `thal`, contain `?` to represent missing values. These values should be handled before performing numerical calculations on those columns.
 
-### AI
-I used ChatGPT to help refine my research question, understand SQL concepts, and draft queries comparing heart disease percentages by sex. I ran the queries in Google Colab and checked their outputs. The numerical findings below come from the query results.
+## SQL Analysis
+The SQL analysis is included in [week2_sql.ipynb](week2_sql.ipynb).
 
-## SQL
+### Q1: How many patients have heart disease?
+**Approach:** Count all records and the records where `num > 0`, then calculate the percentage with heart disease.
 
-The queries below assume that `num = 0` means no heart disease and `num > 0` means heart disease. This interpretation must be confirmed using the dataset documentation.
+**Finding:** 2,281 of the 5,000 records (45.6%) show heart disease.
 
-**Q1. How many synthetic patient records show heart disease?**
+### Q2: How do heart disease rates compare by sex?
+**Approach:** Group patients by `sex` and calculate the percentage with heart disease within each group.
 
-```sql
-SELECT COUNT(*) AS heart_disease_cases
-FROM data
-WHERE num > 0;
-```
+**Finding:** Sex group 1 has a heart disease rate of 48.76%, compared with 36.95% for sex group 0. This is an 11.81 percentage-point difference.
 
-**Finding:** [count] of the 5,000 synthetic patient records show heart disease.
+Using the sex mapping provided in the project feedback, these results correspond to 48.76% for male patients and 36.95% for female patients.
 
-**Q2. Which sex group has the highest percentage of patients with heart disease?**
+### Why Compare Percentages?
+The two sex groups contain different numbers of patients. Comparing percentages accounts for these differences in group size and provides a more meaningful comparison than using heart disease counts alone.
 
-```sql
-SELECT sex,
-       COUNT(*) AS total_patients,
-       SUM(CASE WHEN num > 0 THEN 1 ELSE 0 END) AS disease_cases,
-       ROUND(
-           100.0 * AVG(CASE WHEN num > 0 THEN 1 ELSE 0 END),
-           2
-       ) AS disease_percentage
-FROM data
-GROUP BY sex
-ORDER BY disease_percentage DESC;
-```
+## Main Takeaway
+Heart disease rates differ between the two sex groups in this synthetic dataset. These results demonstrate how comparing rates across groups can help identify patterns for further investigation.
 
-**Finding:** Sex group [code] has the highest heart disease percentage at [percentage]%, compared with [percentage]% in the other group.
+Because the records are synthetic, the findings should be treated as a learning exercise rather than evidence for real-world screening or prevention decisions.
 
-**Q3. What are the top five ages by heart disease case count within sex group 1?**
+## Tableau Visualization — Next Step
+The next step is to create a bar chart comparing heart disease percentages for male and female patients.
 
-```sql
-SELECT age,
-       COUNT(*) AS disease_cases
-FROM data
-WHERE sex = 1 AND num > 0
-GROUP BY age
-ORDER BY disease_cases DESC, age ASC
-LIMIT 5;
-```
+- **Groups:** Male and female, after confirming the sex codes.
+- **Measure:** Percentage of patients with `num > 0` within each group.
+- **Expected results:** 48.76% and 36.95%, matching the SQL analysis.
 
-**Finding:** Within sex group 1, the top five ages are [ages], with [counts] heart disease cases respectively.
+The chart should calculate percentages within each sex group rather than display patient counts.
+
+## AI Assistance
+AI assistance supported the development of the research question and helped explain the SQL analysis and organize the README. Query outputs provide the numerical findings, and dataset documentation is needed to verify the column definitions.
 
 ## Limitations
-This dataset contains synthetic patient records. The findings describe patterns in this dataset and do not establish real-world heart disease rates or clinical screening recommendations.
-
+- The dataset contains synthetic patients, so the findings cannot establish real-world heart disease rates.
+- This analysis compares sex groups without accounting for other factors, such as age or health measurements.
+- Differences between groups do not establish causation.
+- Missing values represented by `?` may require cleaning for future analyses involving other columns.
