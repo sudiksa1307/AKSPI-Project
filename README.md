@@ -29,6 +29,14 @@ Some columns, including `chol`, `fbs`, and `thal`, contain `?` to represent miss
 ## SQL Analysis
 The SQL analysis is included in [week2_sql.ipynb](week2_sql.ipynb).
 
+## Dashboard
+
+[View my dashboard]((https://public.tableau.com/views/AKPsiProjectHeartDiseaseAnalysis/Howdoheartdiseaseratescomparebysex?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link))
+
+![Dashboard](dashboard.png)
+
+**Finding:** In this dataset, heart disease rates were 48.76% for sex 1 and 36.95% for sex 0, a difference of 11.81 percentage points.
+
 ### Q1: How many patients have heart disease?
 **Approach:** Count all records and the records where `num > 0`, then calculate the percentage with heart disease.
 
